@@ -75,8 +75,30 @@ const limpiarForm = () => {
   cantidad.className = "form-control";
   producto.className = "form-control";
 };
+const crearFilas=(parametroFilas)=>{
+  let tabla=document.querySelector('#tablaProducto')
+  console.log(parametroFilas)
+  tabla.innerHTML +=`<tr>
+  <th scope="row">${productoNuevo.codigo}</th>
+  <td>${productoNuevo.producto}</td>
+  <td>${productoNuevo.descripcion}</td>
+  <td>${productoNuevo.cantidad}</td>
+  <td>${productoNuevo.url}</td>
+  <td>
+    <button class="btn btn-danger">Borrar</button>
+    <button class="btn btn-success">Editar</button>
+  </td>
+</tr>` 
+
+}
 const cargaInicial=()=>{
   //traer los podructos del local storage si no dejar el arreglo vacio
   listaProductos = JSON.parse(localStorage.getItem('listaproductosKey')) || []
+  listaProductos.forEach((itemProducto) => {
+    crearFilas(itemProducto);
+    //codigo que se ejecuta por cada elemento del arreglo
+  });
+  
 }
 cargaInicial()
+
