@@ -14,8 +14,6 @@ let descripcion = document.querySelector("#descripcion");
 let formulario = document.querySelector("#formProducto");
 let listaProductos = [];
 
-
-
 codigo.addEventListener("blur", () => {
   validarCodigo(codigo);
 });
@@ -75,30 +73,43 @@ const limpiarForm = () => {
   cantidad.className = "form-control";
   producto.className = "form-control";
 };
-const crearFilas=(parametroFilas)=>{
-  let tabla=document.querySelector('#tablaProducto')
-  console.log(parametroFilas)
-  tabla.innerHTML +=`<tr>
-  <th scope="row">${productoNuevo.codigo}</th>
-  <td>${productoNuevo.producto}</td>
-  <td>${productoNuevo.descripcion}</td>
-  <td>${productoNuevo.cantidad}</td>
-  <td>${productoNuevo.url}</td>
-  <td>
-    <button class="btn btn-danger">Borrar</button>
-    <button class="btn btn-success">Editar</button>
-  </td>
-</tr>` 
-
-}
-const cargaInicial=()=>{
+const cargaInicial = () => {
   //traer los podructos del local storage si no dejar el arreglo vacio
-  listaProductos = JSON.parse(localStorage.getItem('listaproductosKey')) || []
+  listaProductos = JSON.parse(localStorage.getItem("listaproductosKey")) || [];
   listaProductos.forEach((itemProducto) => {
     crearFilas(itemProducto);
     //codigo que se ejecuta por cada elemento del arreglo
   });
-  
-}
-cargaInicial()
+};
 
+const crearFilas = (parametroFilas) => {
+  let tabla = document.querySelector("#tablaProducto");
+  console.log(parametroFilas);
+  tabla.innerHTML += `<tr>
+  <th scope="row">${parametroFilas.codigo}</th>
+  <td>${parametroFilas.nombre}</td>
+  <td>${parametroFilas.descripcion}</td>
+  <td>${parametroFilas.cantidad}</td>
+  <td>${parametroFilas.url}</td>
+  <td>
+    <button class="btn btn-danger">Borrar</button>
+    <button class="btn btn-success"onclick="prepararEdicion('${parametroFilas.codigo}')">Editar</button>
+  </td>
+</tr>`;
+};
+
+window.prepararEdicion = (codigoProducto) => {
+  //buscar el objeto
+  let productoBuscado = listaProductos.find((itemProducto) => {
+    return itemProducto.codigo == codigoProducto;
+  });
+  console.log(productoBuscado);
+  //mostrarlo en formulario
+  codigo.value = productoBuscado.codigo;
+  cantidad.value=productoBuscado.cantidad;
+  descripcion.value=productoBuscado.descripcion;
+  url.value=productoBuscado.url;
+  producto.value=productoBuscado.nombre;
+};
+
+cargaInicial();
