@@ -13,7 +13,10 @@ let producto = document.querySelector("#producto");
 let descripcion = document.querySelector("#descripcion");
 let formulario = document.querySelector("#formProducto");
 let listaProductos = [];
-
+let productoExistente=false; //si es false significa que tengo que agregar un nuevo producto
+// true significa que tengo que modificar un producto existente
+let btnNuevoProducto = document.querySelector('#botonnuevoProducto')
+                  
 codigo.addEventListener("blur", () => {
   validarCodigo(codigo);
 });
@@ -34,8 +37,20 @@ const guardarProducto = (e) => {
   e.preventDefault();
   //verificar que pase todas las validaciones
   if (validarGeneral()) {
+
     //tengo que crear el producto (true)
-    agregarProducto();
+    if(productoExistente===false){
+      agregarProducto();
+
+
+    }
+    else{
+     actualizarProducto()
+
+    }
+    
+
+    //tengo que modificar un producto
   } else {
     console.log("no");
   }
@@ -72,6 +87,8 @@ const limpiarForm = () => {
   descripcion.className = "form-control";
   cantidad.className = "form-control";
   producto.className = "form-control";
+  //resetear el valor de la variable booleana
+  productoExistente=false;
 };
 const cargaInicial = () => {
   //traer los podructos del local storage si no dejar el arreglo vacio
@@ -110,6 +127,37 @@ window.prepararEdicion = (codigoProducto) => {
   descripcion.value=productoBuscado.descripcion;
   url.value=productoBuscado.url;
   producto.value=productoBuscado.nombre;
+  //cambio el valor de la variable PRODUCTOEXISTENTE
+  productoExistente=true;
 };
 
 cargaInicial();
+btnNuevoProducto.addEventListener('click',limpiarForm)
+
+const actualizarProducto=()=>{
+  //buscar la posicion del elemento a modificar
+  let posiciondeProducto = listaProductos.findIndex((itemProducto)=>{return itemProducto.codigo==codigo.value})
+  console.log(posiciondeProducto)
+  //modificar los datos
+  listaProductos[posiciondeProducto].nombre = producto.value;
+  listaProductos[posiciondeProducto].cantidad = cantidad.value;
+  listaProductos[posiciondeProducto].url = url.value;
+  listaProductos[posiciondeProducto].descripcion = descripcion.value;
+  
+
+
+  //modificar el localstorage
+  localStorage.setItem("listaproductosKey",JSON.stringify(listaProductos))
+  //volver a dibujar la tabla
+  borrarFilas();
+  listaProductos.forEach((itemProducto)=>{crearFilas(itemProducto)})
+  limpiarForm()
+
+}
+
+const borrarFilas=()=>{
+  let tabla = document.querySelector("#tablaProducto");
+  
+  tabla.innerHTML = ""
+
+}
